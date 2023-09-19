@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Define a class for completed progress */
+        .completed-progress {
+            background-color: green;
+            /* Change the background color to green */
+        }
+    </style>
+    <script>
+        const sse = new EventSource("http://localhost:8888/progress");
+        sse.onmessage = (msg) => {
+            const data = JSON.parse(msg.data);
+            console.log(data);
+            const progressBar = document.getElementById("p");
+            const h1 = document.querySelector("h1"); // Select the first <h1> element
+
+            progressBar.value = data.progress;
+
+            // Check if progress is 100, and if so, add the completed-progress class
+            if (data.progress === 100) {
+                progressBar.classList.add("completed-progress");
+                h1.textContent = "Task Completed"; // Update the <h1> text
+            } else {
+                // Remove the class if progress is not 100
+                progressBar.classList.remove("completed-progress");
+                h1.textContent = "Task In Progress"; // Reset the <h1> text
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Task In Progress</h1>
+    <progress id="p" value="40" max="100"></progress>
+</body>
+
+</html>
